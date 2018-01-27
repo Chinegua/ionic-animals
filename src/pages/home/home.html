@@ -3,12 +3,24 @@
     <ion-title>
       Sound APP
     </ion-title>
+    <ion-buttons end>
+      <button ion-button *ngIf="!ordenando" (click)="ordenando = true">
+          Organizar
+      </button>
+      <button ion-button *ngIf="ordenando" (click)="ordenando = false">
+          Listo
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-<ion-list>
-  <button ion-item *ngFor="let animal of animales" (click) = "reproducir(animal)" detail-none>
+  <ion-refresher [enabled]="!ordenando" (ionRefresh)="recargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+<ion-list [reorder]="ordenando" (ionItemReorder)="reorganizar($event)">
+  <ion-item-sliding *ngFor="let animal of animales;let i = index">
+  <button ion-item (click) = "reproducir(animal)" detail-none>
     <ion-avatar item-left>
       <img [src]="animal.imagen">
     </ion-avatar>
@@ -16,5 +28,10 @@
     <ion-icon *ngIf="!animal.reproduciendo" name="play" item-right></ion-icon>
     <ion-icon *ngIf="animal.reproduciendo" name="pause" item-right></ion-icon>
   </button>
+
+  <ion-item-options side="left">
+      <button ion-button color="danger" (click)="delete(i)">Delete</button>
+    </ion-item-options>
+</ion-item-sliding>
 </ion-list>
 </ion-content>
